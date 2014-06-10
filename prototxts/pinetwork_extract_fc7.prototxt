@@ -522,3 +522,13 @@ layers {
   bottom: "fc7_2"
   top: "fc7_2"
 }
+layers {
+  name: "join"
+  type: CONCAT
+  bottom: "fc7_1"
+  bottom: "fc7_2"
+  top: "join"
+  concat_param {
+    concat_dim: 1
+  }
+}  

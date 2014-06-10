@@ -27,11 +27,11 @@
 *.mex*
 
 # build, distribute, and bins
-build/*
-distribute/*
+caffe/build/*
+caffe/distribute/*
 *.testbin
 *.bin
-python/caffe/proto/
+caffe/python/caffe/proto/
 
 # Editor temporaries
 *.swp
@@ -42,20 +42,19 @@ python/caffe/proto/
 
 ## Caffe
 
-# User's build configuration
-Makefile.config
 
 # Data and examples are either
 # 1. reference, and not casually committed
 # 2. custom, and live on their own unless they're deliberated contributed
-data/*
-examples/*
+caffe/data/*
 
 # Generated documentation
-docs/_site
+caffe/docs/_site
 _site
 
 # Sublime Text settings
 *.sublime-workspace
 *.sublime-project
 
+#model files
+model_files
