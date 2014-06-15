@@ -160,13 +160,13 @@ layers {
 }
 layers {
   name: "relu2_1"
-  type: relu
+  type: RELU
   bottom: "conv2_1"
   top: "conv2_1"
 }
 layers {
   name: "relu2_2"
-  type: relu
+  type: RELU
   bottom: "conv2_2"
   top: "conv2_2"
 }

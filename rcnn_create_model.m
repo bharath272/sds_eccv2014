@@ -1,8 +1,5 @@
 function rcnn_model = rcnn_create_model(cnn_definition_file, cnn_binary_file, cache_name)
 
-conf = voc_config();
-VOCopts = conf.pascal.VOCopts;
-num_classes = length(VOCopts.classes);
 
 if ~exist('cache_name', 'var') || isempty(cache_name)
   cache_name = 'none';
@@ -43,7 +40,7 @@ cnn.batch_size = 128;
 cnn.init_key = -1;
 cnn.input_size = 227;
 % load the ilsvrc image mean
-data_mean_file = './external/caffe/matlab/caffe/ilsvrc_2012_mean.mat';
+data_mean_file = '../newrcnn/rcnn/external/caffe/matlab/caffe/ilsvrc_2012_mean.mat';
 assert(exist(data_mean_file, 'file') ~= 0);
 ld = load(data_mean_file);
 image_mean = ld.image_mean; clear ld;
@@ -56,13 +53,9 @@ detectors.W = [];
 detectors.B = [];
 detectors.crop_mode = 'warp';
 detectors.crop_padding = 16;
-detectors.nms_thresholds = zeros(1, num_classes);
 detectors.training_opts = [];
 
 % rcnn model wraps the convnet and detectors
-rcnn_model.classes = VOCopts.classes;
-rcnn_model.class_to_index = ...
-    containers.Map(rcnn_model.classes, 1:num_classes);
 rcnn_model.cnn = cnn;
 rcnn_model.cache_name = cache_name;
 rcnn_model.detectors = detectors;

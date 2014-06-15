@@ -46,7 +46,7 @@ static int init_key = -2;
 
 static mxArray* do_forward(const mxArray* const bottom) {
   vector<Blob<float>*>& input_blobs = net_->input_blobs();
-  CHECK_EQ(static_cast<unsigned int>(mxGetDimensions(bottom)[0]),
+  CHECK_EQ(static_cast<unsigned int>(mxGetNumberOfElements(bottom)),
       input_blobs.size());
   for (unsigned int i = 0; i < input_blobs.size(); ++i) {
     const mxArray* const elem = mxGetCell(bottom, i);
