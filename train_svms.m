@@ -1,5 +1,6 @@
 function models=train_svms(imnames, feat_dir, region_meta_info, cachedir, run_name, varargin)
-
+%random seed
+rng(3);
 
 
 %input parser to allow additional inputs
@@ -10,7 +11,7 @@ addOptional(p,'bias_mult',10,@isscalar);
 addOptional(p, 'pos_loss_weight', 2, @isscalar);
 addOptional(p, 'do_latent', 1, @isscalar);
 addOptional(p, 'pos_ov_thresh', 0.5, @isscalar);
-addOptional(p, 'neg_ov_thresh', 0.3, @isscalar);
+addOptional(p, 'neg_ov_thresh', 0.2, @isscalar);
 addOptional(p, 'hard_neg_thresh', -1.0001, @isscalar);
 addOptional(p, 'evict_thresh', -1.2, @isscalar);
 addOptional(p, 'retrain_limit', 2000, @isscalar);
