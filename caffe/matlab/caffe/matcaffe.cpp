@@ -223,6 +223,90 @@ static mxArray* do_get_weights() {
   return mx_layers;
 }
 
+static void do_save_net(MEX_ARGS){
+  char* filename=mxArrayToString(prhs[0]);
+  NetParameter net_param;
+  net_->ToProto(&net_param);
+  WriteProtoToBinaryFile(net_param, filename);
+}
+
+static void do_change_weights(MEX_ARGS){
+  const mxArray* mx_layers=prhs[0];
+  const int numel_dims=mxGetNumberOfDimensions(mx_layers);
+  const int numel=mxGetNumberOfElements(mx_layers);
+  const vector<string>& layer_names = net_->layer_names();
+  const vector<shared_ptr<Layer<float> > >& layers = net_->layers();
+
+  //for each layer
+  for(int i=0;i<numel;i++)
+  {
+    const mxArray* mx_layer_name=mxGetField(mx_layers, i, "layer_names");
+    const mxArray* mx_weights=mxGetField(mx_layers, i, "weights");
+    char* string_name = mxArrayToString(mx_layer_name);
+    string string_name_str(string_name); 
+    //find the layer in the network
+    int index=-1;
+    for(int j=0;j<layer_names.size();j++)
+    {
+      if(layer_names[j]==string_name_str){
+        index=j;
+        break;	
+      }
+    }
+    string_name_str.clear();
+    
+    if(index==-1) {
+      mexErrMsgTxt("Could not find layer");
+
+    }
+
+
+    //found the layer. Now get the data
+    vector<shared_ptr<Blob<float> > >& layer_blobs = layers[index]->blobs();
+
+    //check number of elements
+    const int numelweights=mxGetNumberOfElements(mx_weights);
+    if(numelweights!=layer_blobs.size()){
+        LOG(ERROR)<<"Number of blobs"<<numelweights<<" "<<layer_blobs.size();
+	mexErrMsgTxt("Number of blobs is not same!");    
+
+
+    }   
+    //for each blob
+    for(int j=0; j<layer_blobs.size(); j++){
+      mxArray* mx_weights_this=mxGetCell(mx_weights, j);
+      const int numel_this=mxGetNumberOfElements(mx_weights_this);
+      int blobcount = layer_blobs[j]->count();
+      if(numel_this!=blobcount){
+        mexErrMsgTxt("Size of blobs is not same!");
+      }
+      float *weights_ptr = reinterpret_cast<float*>(mxGetPr(mx_weights_this));
+      LOG(INFO)<<"Copying layer "<<i<<" with blob "<<j<<"\n";
+      float *data_vec = layer_blobs[j]->mutable_cpu_data();
+      for(long int k=0; k<layer_blobs[j]->count(); k++){
+        data_vec[k] = weights_ptr[k];
+
+
+      }
+      LOG(INFO)<<"Copied \n";
+    }
+
+
+ 
+  }
+
+  
+
+
+
+}
+
+
+
+
+
+
+
 static void get_weights(MEX_ARGS) {
   plhs[0] = do_get_weights();
 }
@@ -279,6 +363,11 @@ static void init(MEX_ARGS) {
   }
 }
 
+static void read_prototxt(MEX_ARGS) {
+  char* param_file = mxArrayToString(prhs[0]);
+  net_.reset(new Net<float>(string(param_file)));
+
+}
 static void reset(MEX_ARGS) {
   if (net_) {
     net_.reset();
@@ -335,6 +424,9 @@ static handler_registry handlers[] = {
   { "get_weights",        get_weights     },
   { "get_init_key",       get_init_key    },
   { "reset",              reset           },
+  { "change_weights",     do_change_weights},
+  { "save_net",           do_save_net},
+  { "read_prototxt",      read_prototxt},
   // The end.
   { "END",                NULL            },
 };

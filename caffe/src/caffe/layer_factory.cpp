@@ -80,6 +80,10 @@ Layer<Dtype>* GetLayer(const LayerParameter& param) {
     return new TanHLayer<Dtype>(param);
   case LayerParameter_LayerType_WINDOW_DATA:
     return new WindowDataLayer<Dtype>(param);
+  case LayerParameter_LayerType_MASKED_WINDOW_DATA:
+    return new MaskedWindowDataLayer<Dtype>(param);
+  case LayerParameter_LayerType_PI_WINDOW_DATA:
+    return new PiWindowDataLayer<Dtype>(param);
   case LayerParameter_LayerType_NONE:
     LOG(FATAL) << "Layer " << name << " has unspecified type.";
   default:

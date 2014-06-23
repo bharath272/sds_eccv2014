@@ -213,6 +213,106 @@ class WindowDataLayer : public Layer<Dtype> {
   vector<vector<float> > bg_windows_;
 };
 
+template <typename Dtype>
+void* MaskedWindowDataLayerPrefetch(void* layer_pointer);
+
+
+//A structure storing all window information from image
+struct ImageWindows{
+	std::string image_path;
+	std::string mask_path;
+	std::string sp_path;
+	int image_size[3];
+	vector<int> fg_windows_index;
+	vector<int> bg_windows_index;
+
+};
+
+template <typename Dtype>
+class MaskedWindowDataLayer : public Layer<Dtype> {
+  // The function used to perform prefetching.
+  friend void* MaskedWindowDataLayerPrefetch<Dtype>(void* layer_pointer);
+
+ public:
+  explicit MaskedWindowDataLayer(const LayerParameter& param)
+      : Layer<Dtype>(param) {}
+  virtual void SetUp(const vector<Blob<Dtype>*>& bottom,
+      vector<Blob<Dtype>*>* top);
+  virtual ~MaskedWindowDataLayer();
+
+ protected:
+  virtual Dtype Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+      vector<Blob<Dtype>*>* top);
+  virtual Dtype Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+      vector<Blob<Dtype>*>* top);
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+      const bool propagate_down, vector<Blob<Dtype>*>* bottom){return;}
+  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+      const bool propagate_down, vector<Blob<Dtype>*>* bottom){return;}
+  virtual void CreatePrefetchThread();
+  virtual void JoinPrefetchThread();
+  virtual unsigned int PrefetchRand();
+
+  shared_ptr<Caffe::RNG> prefetch_rng_;
+
+  pthread_t thread_;
+  shared_ptr<Blob<Dtype> > prefetch_data_;
+  shared_ptr<Blob<Dtype> > prefetch_label_;
+  Blob<Dtype> data_mean_;
+  vector<ImageWindows> image_database_;
+  enum WindowField { IMAGE_INDEX, LABEL, OVERLAP, X1, Y1, X2, Y2, INDEX_IN_IMAGE, NUM };
+  vector<vector<float> > windows_;
+  
+};
+
+template <typename Dtype>
+void* PiWindowDataLayerPrefetch(void* layer_pointer);
+
+
+template <typename Dtype>
+class PiWindowDataLayer : public Layer<Dtype> {
+  // The function used to perform prefetching.
+  friend void* PiWindowDataLayerPrefetch<Dtype>(void* layer_pointer);
+
+ public:
+  explicit PiWindowDataLayer(const LayerParameter& param)
+      : Layer<Dtype>(param) {}
+  virtual void SetUp(const vector<Blob<Dtype>*>& bottom,
+      vector<Blob<Dtype>*>* top);
+  virtual ~PiWindowDataLayer();
+
+ protected:
+  virtual Dtype Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+      vector<Blob<Dtype>*>* top);
+  virtual Dtype Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+      vector<Blob<Dtype>*>* top);
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+      const bool propagate_down, vector<Blob<Dtype>*>* bottom){return;}
+  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+      const bool propagate_down, vector<Blob<Dtype>*>* bottom){return;}
+  virtual void CreatePrefetchThread();
+  virtual void JoinPrefetchThread();
+  virtual unsigned int PrefetchRand();
+
+  shared_ptr<Caffe::RNG> prefetch_rng_;
+
+  pthread_t thread_;
+  shared_ptr<Blob<Dtype> > prefetch_box_;
+  shared_ptr<Blob<Dtype> > prefetch_reg_;
+
+  shared_ptr<Blob<Dtype> > prefetch_label_;
+  Blob<Dtype> data_mean_;
+  vector<ImageWindows> image_database_;
+  enum WindowField { IMAGE_INDEX, LABEL, OVERLAP, X1, Y1, X2, Y2, INDEX_IN_IMAGE, NUM };
+  vector<vector<float> > windows_;
+  
+};
+
+
+
+
+
+
 }  // namespace caffe
 
 #endif  // CAFFE_DATA_LAYERS_HPP_

@@ -1,0 +1,15 @@
+train_net: "/home/eecs/bharath2/caffe_slad/prototxts/window_train.prototxt"
+test_net: "/home/eecs/bharath2/caffe_slad/prototxts/window_val.prototxt"
+test_iter: 100
+test_interval: 1000
+base_lr: 0.001
+lr_policy: "step"
+gamma: 0.1
+stepsize: 20000
+display: 20
+max_iter: 100000
+momentum: 0.9
+weight_decay: 0.0005
+snapshot: 10000
+device_id: 1
+snapshot_prefix: "/data1/bharath2/caffe_snapshots/window_oldinit/net"

@@ -114,7 +114,7 @@ message LayerParameter {
   // line above the enum. Update the next available ID when you add a new
   // LayerType.
   //
-  // LayerType next available ID: 30 (last added: MEMORY_DATA)
+  // LayerType next available ID: 32 (last added: PI_WINDOW_DATA)
   enum LayerType {
     // "NONE" layer type is 0th enum element so that we don't cause confusion
     // by defaulting to an existent LayerType (instead, should usually error if
@@ -149,6 +149,8 @@ message LayerParameter {
     SPLIT = 22;
     TANH = 23;
     WINDOW_DATA = 24;
+    MASKED_WINDOW_DATA = 30;
+    PI_WINDOW_DATA = 31;
   }
   optional LayerType type = 5; // the layer type from the enum above
 
