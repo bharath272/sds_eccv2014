@@ -10,6 +10,8 @@ end
 N=2000;
 
 for i=1:numel(imnames)
+    if(exist(fullfile(sptextdir, [imnames{i} '.txt']), 'file')) continue; end
+
     tmp=load(fullfile(mcgdir, [imnames{i} '.mat']));
     candidates=tmp.candidates; clear tmp;
     %get reg2sp

@@ -28,11 +28,17 @@ for i=1:numel(imnames)
     %compute overlaps between everything
     ov=double(reg2sp')*double(reg2sp);
     ov=ov>0;
+    if(~exist(fullfile(ovoutdir, [imnames{i} '.mat']), 'file'))
     save(fullfile(ovoutdir, [imnames{i} '.mat']), 'ov');
-
+    end
     %load gt
+    if(isempty(gtdir))
+        %no gt
+        inst=zeros(size(sp));
+        categories=[];
+    else
     [cls, inst, categories]=load_gt(gtdir, imnames{i});
-   
+    end
     %compute overlaps with ground truth
     overlap=get_gt_overlaps(reg2sp, sp, inst);    
     box_overlap=get_gt_overlaps_box(reg2sp, sp, inst);
@@ -49,10 +55,13 @@ for i=1:numel(imnames)
     [sp, reg2sp]=intersect_partitions(gt_sp, sp, gt_reg2sp, reg2sp);
 
     %write sprep
+    
     textfile=fullfile(sptextdir, [imnames{i} '.txt']);
+    if(~exist(textfile, 'file'))
     write_sprep_text(sp, textfile);
     reg2spfile=fullfile(regspimgdir, [imnames{i} '.png']);
     imwrite(uint8(reg2sp),reg2spfile);
+    end
     fprintf('Done %d\n', i);
 end
         

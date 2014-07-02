@@ -1,4 +1,5 @@
 function box_overlaps=get_gt_overlap_box(reg2sp, sp, instimg)
+if(all(instimg==0)) box_overlaps=zeros(0,size(reg2sp,2)); return; end
 boxes=get_region_boxes(sp, reg2sp);
 instimg=double(instimg);
 insts=unique(instimg(instimg~=0));

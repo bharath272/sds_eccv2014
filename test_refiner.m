@@ -1,6 +1,7 @@
 function [refined_overlaps]=test_refiner(imnames, chosenregs, region_meta_info, sbddir, featdir, sptextdir, regspimgdir, refinement_model, Wsz)
 refined_overlaps=cell(numel(imnames),1);
 for i=1:numel(imnames)
+    tic;
     if(isempty(chosenregs{i})) continue; end
     regids=chosenregs{i};
 
@@ -50,7 +51,7 @@ for i=1:numel(imnames)
 
     %threshold
     newreg2sp=newreg2sp>=0.5;
-    
+    toc;
     %load the gt
     [cls, inst]=load_gt(sbddir, imnames{i});
     overlap=get_gt_overlaps(newreg2sp, sp, inst);    
