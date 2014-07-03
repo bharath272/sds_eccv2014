@@ -1,5 +1,7 @@
-function [refined_overlaps]=test_refiner(imnames, chosenregs, region_meta_info, sbddir, featdir, sptextdir, regspimgdir, refinement_model, Wsz)
+function [refined_overlaps, refined_pprecision, refined_precall]=test_refiner(imnames, chosenregs, region_meta_info, sbddir, featdir, sptextdir, regspimgdir, refinement_model, Wsz)
 refined_overlaps=cell(numel(imnames),1);
+refined_pprecision=cell(numel(imnames),1);
+refined_pprecall=cell(numel(imnames),1);
 for i=1:numel(imnames)
     tic;
     if(isempty(chosenregs{i})) continue; end
@@ -54,8 +56,10 @@ for i=1:numel(imnames)
     toc;
     %load the gt
     [cls, inst]=load_gt(sbddir, imnames{i});
-    overlap=get_gt_overlaps(newreg2sp, sp, inst);    
+    [overlap, pprecision, precall]=get_gt_overlaps(newreg2sp, sp, inst);    
     refined_overlaps{i}=overlap;
+    refined_pprecision{i}=pprecision;
+    refined_precall{i}=precall;
     fprintf('Doing %d\n',i);
 end
     
