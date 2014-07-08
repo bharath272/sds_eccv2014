@@ -1,5 +1,5 @@
 function test_save_refiner(imnames, outdir, chosenregs, region_meta_info, featdir, sptextdir, regspimgdir, refinement_model, Wsz)
-mkdir(outdir);
+if(~exist(outdir, 'file')) mkdir(outdir);end
 refined_overlaps=cell(numel(imnames),1);
 for i=1:numel(imnames)
     if(isempty(chosenregs{i})) continue; end

@@ -40,7 +40,7 @@ cnn.batch_size = 128;
 cnn.init_key = -1;
 cnn.input_size = 227;
 % load the ilsvrc image mean
-data_mean_file = '../newrcnn/rcnn/external/caffe/matlab/caffe/ilsvrc_2012_mean.mat';
+data_mean_file = 'sds_pretrained_models/ilsvrc_2012_mean.mat';
 assert(exist(data_mean_file, 'file') ~= 0);
 ld = load(data_mean_file);
 image_mean = ld.image_mean; clear ld;
