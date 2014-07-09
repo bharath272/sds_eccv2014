@@ -29,7 +29,56 @@ imagelist_to_sds. To see how to call that function, start with demo_sds.m
            Benchmarking and evaluation
 ------------------------------------------------
 
-Benchmarking depends on two pieces of code:
+You can also run the benchmark demo, demo_sds_benchmark, which tests our pipeline on a small set of
+100 images and then evaluates for the person category. demo_sds_benchmark should point you to how to run
+the benchmark.
 
-o 
+The main function for running the benchmark is evaluation/run_benchmark.m. The code should be self explanatory.
+
+
+-------------------------------------------------
+           Retraining region classifiers
+-------------------------------------------------
+
+To retrain region classifiers, you first need to save features for all regions including ground truth. You can look at the function
+setup_svm_training.m. This function will save features and return a region_meta_info struct, which has in it the overlaps of all the
+regions with all the ground truth. The function expects a list of images, a number of paths to save stuff in, and a path to the
+ground truth (SBD).
+
+Once the features are saved you can use the region_classification/train_svms.m function to train the detectors.
+You can also train refinement models for each category using refinement/train_refiner.m 
+
+-------------------------------------------------
+         Retraining the network
+-------------------------------------------------
+To retrain the network you will have to use caffe. You need two things: a prototxt specifying the architecture, and a window_file specifying
+the data.
+
+o Window file
+Writing the window file requires you to make a choice between using box overlap to define ground truth, or using region overlap to define ground
+truth. In the former case, use feature_extractor/make_window_file_box.m and in the latter use feature_extractor/make_window_file_box.m. Both functions
+require as input the image list, region_meta_info (output of preprocessing/preprocess_mcg_candidates; check setup_svm_training to see how to call it), 
+sptextdir, regspimgdir (specifying the superpixels and regions) and the filename in which the output should go.
+
+o Prototxt
+There are 3 prototxts that figure during training. One specifies the solver, and points to the other two: one for training and the other for testing.
+Training a single pathway network for boxes can be done with the window_train and window_val, a single pathway network on regions can be done using masked_window_train
+and masked_window_val, and a two pathway network (net C) can be trained using piwindow_train and piwindow_val. (Here ``pi" refers to the architecture of the network,
+which looks like the capital greek pi.)
+The train and val prototxts also specify which window file to use.
+The solver prototxt specifies the path to the train and val prototxts. It also specifies where the snapshots are saved. Make sure that path can be saved to.
+
+o A final requirement for finetuning is to have an initial network, and also the imagenet mean. The latter you can get by running 
+extern/caffe/data/ilsvrc12/get_ilsvrc_aux.sh
+The initial network is the B network for net C. For everything else, it is the caffe reference imagenet model, which you can get by running
+extern/caffe/examples/imagenet/get_caffe_reference_imagenet_model.sh
+ 
+Now cd into caffe and use the following command to train the network (replace caffe_reference_imagenet_model by the appropriate initialization):
+GLOG_logtostderr=1 ./build/tools/finetune_net.bin ../prototxts/pascal_finetune_solver.prototxt ./examples/imagenet/caffe_reference_imagenet_model 2>&1 | tee logdir/log.txt
+
+o Finally, extracting features requires a network with the two-pathway architecture. If you trained the box and region pathway separately, you can stitch them together
+using feature_extractor/combine_box_region_nets.m
+
+
+
 
