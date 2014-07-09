@@ -27,7 +27,6 @@ for i=1:numel(imnames)
     regidsall{i}=regids;
     movindall{i}=movind;
 end
-keyboard
 for i=1:numel(imnames)
     regids=regidsall{i};
     movind=movindall{i};

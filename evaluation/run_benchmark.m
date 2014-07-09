@@ -11,7 +11,7 @@ for i=1:numel(imnames)
 
     %if there is refined regions, read them
     if(exist('refineddir', 'var'))
-        tmp=load(fullfile(refineddir, [imnames{i} '.mat']));
+        tmp=load(fullfile(refineddir, int2str(categid), [imnames{i} '.mat']));
         reg2sp=tmp.newreg2sp;
     end
     
