@@ -1,0 +1,35 @@
+
+-----------------------------------------------
+           Installation
+-----------------------------------------------
+
+o Installing caffe
+  The code comes bundled with a version of caffe that we have modified slightly for SDS. (These
+  modifications might be merged into the public caffe version sometime in the future). To install
+  caffe, follow the instructions on the caffe webpage (caffe.berkeleyvision.org). Note that after
+  you have made caffe, you will also need to make matcaffe.
+
+o Installing MCG
+  Download MCG (the PreTrained version should be sufficient) into extern/. You can get MCG from
+  http://www.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/mcg/. After downloading MCG
+  change the root_dir in the MCG directory. Then running startup.m from the main SDS directory
+  should get you started.
+
+
+------------------------------------------------
+           Testing Pre-trained models
+------------------------------------------------
+Download the pretrained models from http://www.eecs.berkeley.edu/Research/Projects/CS/vision/shape/sds/sds_pretrained_models.tgz
+and untar them in the main SDS directory. 
+
+After that, you can run the pretrained models on any set of images using the function 
+imagelist_to_sds. To see how to call that function, start with demo_sds.m
+
+------------------------------------------------
+           Benchmarking and evaluation
+------------------------------------------------
+
+Benchmarking depends on two pieces of code:
+
+o 
+
