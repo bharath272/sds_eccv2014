@@ -30,10 +30,14 @@ imagelist_to_sds. To see how to call that function, start with demo_sds.m
 ------------------------------------------------
 
 You can also run the benchmark demo, demo_sds_benchmark, which tests our pipeline on a small set of
-100 images and then evaluates for the person category. demo_sds_benchmark should point you to how to run
-the benchmark.
+100 images and then evaluates for the person category. It does the evaluation for both before refinement
+and after refinement, and reports an AP^r of 59.9 in the first case and 66.8 in the second case. 
+
+
 
 The main function for running the benchmark is evaluation/run_benchmark.m. The code should be self explanatory.
+demo_sds_benchmark should point you to how to run the benchmark.
+
 
 
 -------------------------------------------------
