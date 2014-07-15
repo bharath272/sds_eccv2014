@@ -10,4 +10,6 @@ addpath(fullfile(pwd, 'evaluation'));
 addpath(fullfile(pwd, 'extern/MCG-PreTrained'));
 cd extern/MCG-PreTrained;
 install;
-cd ../../
+cd ../liblinear/liblinear-1.94/matlab
+make
+cd ../../../..
