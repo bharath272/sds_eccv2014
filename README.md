@@ -30,14 +30,16 @@
 
 ###Using Pre-computed results
 To get started you can look at precomputed results.
-Download the precomputed results from [here](ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_precomputed_results.tar.gz)
+Download the precomputed results from this ftp link:
+`ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_precomputed_results.tar.gz`
 and untar it. You can visualize the precomputed results using the function `visualize_precomputed_results.m`, 
 to which you provide the directory containing the precomputed results, the directory containing PASCAL images, 
 and the category number (1-20) you want to visualize.
 
 ###Testing Pre-trained models
 
-Download the pretrained models from [here](ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_pretrained_models.tar.gz)
+Download the pretrained models from this ftp link:
+`ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_pretrained_models.tar.gz`
 and untar them in the main SDS directory. 
 
 After that, you can run the pretrained models on any set of images using the function 
