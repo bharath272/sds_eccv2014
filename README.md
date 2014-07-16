@@ -1,0 +1,131 @@
+
+           Installation
+-----------------------------------------------
+
+* Installing caffe
+  The code comes bundled with a version of caffe that we have modified slightly for SDS. (These
+  modifications might be merged into the public caffe version sometime in the future). To install
+  caffe, follow the instructions on the caffe webpage (caffe.berkeleyvision.org). Note that after
+  you have made caffe, you will also need to make matcaffe.
+
+* Downloading other external dependencies (MCG and liblinear)
+  The extern folder has a script that downloads MCG and liblinear. After running the script,
+  cd into extern/MCG-PreTrained and change the path in `root_dir.m` to the path to the MCG-PreTrained
+  directory.
+
+  After these steps, running startup.m from the main SDS directory should get you started.
+
+
+
+         Using Pre-computed results
+------------------------------------------------
+Download the precomputed results from [here](ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_precomputed_results.tar.gz)
+and untar it.
+You can visualize the precomputed results using the function `visualize_precomputed_results.m`, to which you provide the directory containing
+the precomputed results, the directory containing PASCAL images, and the category you want to visualize.
+
+           Testing Pre-trained models
+------------------------------------------------
+Download the pretrained models from [here](ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_pretrained_models.tar.gz)
+and untar them in the main SDS directory. 
+
+After that, you can run the pretrained models on any set of images using the function 
+`imagelist_to_sds.m`. To see how to call that function, start with `demo_sds.m`
+
+           Benchmarking and evaluation
+------------------------------------------------
+
+You can also run the benchmark demo, `demo_sds_benchmark`, which tests our pipeline on a small set of
+100 images and then evaluates for the person category. It does the evaluation for both before refinement
+and after refinement, and reports an AP<sup>r</sup> of **59.9** in the first case and **66.8** in the second case. 
+
+
+
+The main function for running the benchmark is `evaluation/run_benchmark.m`. The code should be self explanatory.
+`demo_sds_benchmark` should point you to how to run the benchmark.
+
+           SDS results format
+------------------------------------------------
+Before you go further you may want to know the format in which we save and process results.
+Because we work with close to 2000 region candidates, saving them as full image-sized masks
+uses up a lot of space and requires a lot of memory to process. Instead, we save these region
+ candidates using a superpixel representation: we save a superpixel map, containing the superpixel id 
+for each pixel in the image, and we represent each region as a binary vector indicating which
+superpixels are present in the region. To allow this superpixel representation to be accessible to
+Caffe, we 
+o save the superpixel map as a text file, the first two numbers in which represent the size of the
+ image and the rest of the file contains the superpixel ids of the pixels in scanline order.
+o stack the representation of each region as a matrix (each column representing a region) and save it as a png image.
+
+`read_sprep` can read this representation into matlab.
+
+After the regions have been scored and non-max suppressed, we store the chosen regions as a cell array, one cell
+per category. Each cell is itself a cell array, with as many cells as there are images, and each cell containing
+ the region id of the chosen regions. The scores are stored in a separate cell array.
+
+After refinement, the refined regions are stored as binary matrices in mat files, one for each image. The refined
+regions for different categories are stored in different directories
+
+
+
+
+         Evaluating on detection and segmentation
+--------------------------------------------------------
+* Detection
+  To evaluate on detection, after computing scores on all regions, use `misc/box_nms.m` to non-max suppress the boxes
+  using box overlap. `misc/write_test_boxes` will write the boxes out to a file that you can submit to PASCAL.
+
+* Semantic segmentation
+  To evaluate on semantic segmentation, compute scores on all regions, do `misc/region_nms.m` to non-max suppress boxes,
+  and use `misc/get_top_regions.m` to get the top regions per category. For our experiments, we picked the top 5K regions for seg val
+  and seg test. Then call `paste_segments`:
+  `[local_ids, labels, scores2] = paste_segments(topchosen, scores, region_meta_info, 2, 10, -1);`
+  `topchosen` is the first output of `get_top_regions.m`. These parameters above were tuned on seg val 2011.
+  This function will pick out the segments to paste. To do the actual pasting, use `create_pasted_segmentations` (if you don't want any
+  refinement) or `create_pasted_segmentations_refined` (if you want refinement). Refinement is a bit slower but works ~1 point better.
+
+
+           Retraining region classifiers
+-------------------------------------------------
+
+To retrain region classifiers, you first need to save features for all regions including ground truth. You can look at the function
+`setup_svm_training.m`. This function will save features and return a `region_meta_info` struct, which has in it the overlaps of all the
+regions with all the ground truth. The function expects a list of images, a number of paths to save stuff in, and a path to the
+ground truth (SBD).
+
+Once the features are saved you can use the `region_classification/train_svms.m` function to train the detectors.
+You can also train refinement models for each category using `refinement/train_refiner.m` 
+
+         Retraining the network
+-------------------------------------------------
+To retrain the network you will have to use caffe. You need two things: a prototxt specifying the architecture, and a window file specifying
+the data.
+
+* Window file
+Writing the window file requires you to make a choice between using box overlap to define ground truth, or using region overlap to define ground
+truth. In the former case, use `feature_extractor/make_window_file_box.m` and in the latter use `feature_extractor/make_window_file_box.m`. Both functions
+require as input the image list, `region_meta_info` (output of `preprocessing/preprocess_mcg_candidates`; check `setup_svm_training` to see how to call it), 
+sptextdir, regspimgdir (specifying the superpixels and regions) and the filename in which the output should go.
+
+* Prototxt
+There are 3 prototxts that figure during training. One specifies the solver, and points to the other two: one for training and the other for testing.
+Training a single pathway network for boxes can be done with the `window_train` and `window_val`, a single pathway network on regions can be done using `masked_window_train`
+and `masked_window_val`, and a two pathway network (net C) can be trained using `piwindow_train` and `piwindow_val`. (Here "pi" refers to the architecture of the network,
+which looks like the capital greek pi.)
+The train and val prototxts also specify which window file to use.
+The solver prototxt specifies the path to the train and val prototxts. It also specifies where the snapshots are saved. Make sure that path can be saved to.
+
+* A final requirement for finetuning is to have an initial network, and also the imagenet mean. The latter you can get by running 
+`extern/caffe/data/ilsvrc12/get_ilsvrc_aux.sh`
+The initial network is the B network for net C. For everything else, it is the caffe reference imagenet model, which you can get by running
+`extern/caffe/examples/imagenet/get_caffe_reference_imagenet_model.sh`
+ 
+Now cd into caffe and use the following command to train the network (replace `caffe_reference_imagenet_model` by the appropriate initialization):
+`GLOG_logtostderr=1 ./build/tools/finetune_net.bin ../prototxts/pascal_finetune_solver.prototxt ./examples/imagenet/caffe_reference_imagenet_model 2>&1 | tee logdir/log.txt`
+
+* Finally, extracting features requires a network with the two-pathway architecture. If you trained the box and region pathway separately, you can stitch them together
+using `feature_extractor/combine_box_region_nets.m`
+
+
+
+
