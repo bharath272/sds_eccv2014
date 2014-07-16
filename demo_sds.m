@@ -23,6 +23,6 @@ chosen=tmp.topchosen;
 chosenscores=tmp.topscores;
 
 %visualize the top detections
-visualize_sds({imname}, imgdir, sptextdir, regspimgdir, chosen, chosenscores, categid, refinedoutdir);
+visualize_sds({imname}, imgdir, sptextdir, regspimgdir, chosen, chosenscores, 15, refinedoutdir);
 
 

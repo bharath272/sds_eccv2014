@@ -20,7 +20,7 @@ o Downloading other external dependencies (MCG and liblinear)
 ------------------------------------------------
          Using Pre-computed results
 ------------------------------------------------
-Download the precomputed results from http://www.eecs.berkeley.edu/Research/Projects/CS/vision/shape/sds/sds_precomputed_results.tgz
+Download the precomputed results from ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_precomputed_results.tar.gz
 and untar it
 You can visualize the precomputed results using the function visualize_precomputed_results.m, to which you provide the directory containing
 the precomputed results, the directory containing PASCAL images, and the category you want to visualize.
@@ -28,7 +28,7 @@ the precomputed results, the directory containing PASCAL images, and the categor
 ------------------------------------------------
            Testing Pre-trained models
 ------------------------------------------------
-Download the pretrained models from http://www.eecs.berkeley.edu/Research/Projects/CS/vision/shape/sds/sds_pretrained_models.tgz
+Download the pretrained models from ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_pretrained_models.tar.gz
 and untar them in the main SDS directory. 
 
 After that, you can run the pretrained models on any set of images using the function 
