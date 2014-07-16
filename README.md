@@ -1,6 +1,5 @@
 
-           Installation
------------------------------------------------
+###Installation
 
 * Installing caffe
   The code comes bundled with a version of caffe that we have modified slightly for SDS. (These
@@ -17,23 +16,21 @@
 
 
 
-         Using Pre-computed results
-------------------------------------------------
+###Using Pre-computed results
 Download the precomputed results from [here](ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_precomputed_results.tar.gz)
 and untar it.
 You can visualize the precomputed results using the function `visualize_precomputed_results.m`, to which you provide the directory containing
 the precomputed results, the directory containing PASCAL images, and the category you want to visualize.
 
-           Testing Pre-trained models
-------------------------------------------------
+###Testing Pre-trained models
+
 Download the pretrained models from [here](ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_pretrained_models.tar.gz)
 and untar them in the main SDS directory. 
 
 After that, you can run the pretrained models on any set of images using the function 
 `imagelist_to_sds.m`. To see how to call that function, start with `demo_sds.m`
 
-           Benchmarking and evaluation
-------------------------------------------------
+###Benchmarking and evaluation
 
 You can also run the benchmark demo, `demo_sds_benchmark`, which tests our pipeline on a small set of
 100 images and then evaluates for the person category. It does the evaluation for both before refinement
@@ -44,8 +41,7 @@ and after refinement, and reports an AP<sup>r</sup> of **59.9** in the first cas
 The main function for running the benchmark is `evaluation/run_benchmark.m`. The code should be self explanatory.
 `demo_sds_benchmark` should point you to how to run the benchmark.
 
-           SDS results format
-------------------------------------------------
+###SDS results format
 Before you go further you may want to know the format in which we save and process results.
 Because we work with close to 2000 region candidates, saving them as full image-sized masks
 uses up a lot of space and requires a lot of memory to process. Instead, we save these region
@@ -53,9 +49,9 @@ uses up a lot of space and requires a lot of memory to process. Instead, we save
 for each pixel in the image, and we represent each region as a binary vector indicating which
 superpixels are present in the region. To allow this superpixel representation to be accessible to
 Caffe, we 
-o save the superpixel map as a text file, the first two numbers in which represent the size of the
+* save the superpixel map as a text file, the first two numbers in which represent the size of the
  image and the rest of the file contains the superpixel ids of the pixels in scanline order.
-o stack the representation of each region as a matrix (each column representing a region) and save it as a png image.
+* stack the representation of each region as a matrix (each column representing a region) and save it as a png image.
 
 `read_sprep` can read this representation into matlab.
 
@@ -69,8 +65,8 @@ regions for different categories are stored in different directories
 
 
 
-         Evaluating on detection and segmentation
---------------------------------------------------------
+###Evaluating on detection and segmentation
+
 * Detection
   To evaluate on detection, after computing scores on all regions, use `misc/box_nms.m` to non-max suppress the boxes
   using box overlap. `misc/write_test_boxes` will write the boxes out to a file that you can submit to PASCAL.
@@ -85,8 +81,7 @@ regions for different categories are stored in different directories
   refinement) or `create_pasted_segmentations_refined` (if you want refinement). Refinement is a bit slower but works ~1 point better.
 
 
-           Retraining region classifiers
--------------------------------------------------
+###Retraining region classifiers
 
 To retrain region classifiers, you first need to save features for all regions including ground truth. You can look at the function
 `setup_svm_training.m`. This function will save features and return a `region_meta_info` struct, which has in it the overlaps of all the
@@ -96,8 +91,7 @@ ground truth (SBD).
 Once the features are saved you can use the `region_classification/train_svms.m` function to train the detectors.
 You can also train refinement models for each category using `refinement/train_refiner.m` 
 
-         Retraining the network
--------------------------------------------------
+###Retraining the network
 To retrain the network you will have to use caffe. You need two things: a prototxt specifying the architecture, and a window file specifying
 the data.
 
