@@ -9,12 +9,21 @@ o Installing caffe
   caffe, follow the instructions on the caffe webpage (caffe.berkeleyvision.org). Note that after
   you have made caffe, you will also need to make matcaffe.
 
-o Installing MCG
-  Download MCG (the PreTrained version should be sufficient) into extern/. You can get MCG from
-  http://www.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/mcg/. After downloading MCG
-  change the root_dir in the MCG directory. Then running startup.m from the main SDS directory
-  should get you started.
+o Downloading other external dependencies (MCG and liblinear)
+  The extern folder has a script that downloads MCG and liblinear. After running the script,
+  cd into extern/MCG-PreTrained and change the path in root_dir.m to the path to the MCG-PreTrained
+  directory.
+  After that, running startup.m from the main SDS directory should get you started.
 
+
+
+------------------------------------------------
+         Using Pre-computed results
+------------------------------------------------
+Download the precomputed results from http://www.eecs.berkeley.edu/Research/Projects/CS/vision/shape/sds/sds_precomputed_results.tgz
+and untar it
+You can visualize the precomputed results using the function visualize_precomputed_results.m, to which you provide the directory containing
+the precomputed results, the directory containing PASCAL images, and the category you want to visualize.
 
 ------------------------------------------------
            Testing Pre-trained models
@@ -38,6 +47,47 @@ and after refinement, and reports an AP^r of 59.9 in the first case and 66.8 in 
 The main function for running the benchmark is evaluation/run_benchmark.m. The code should be self explanatory.
 demo_sds_benchmark should point you to how to run the benchmark.
 
+------------------------------------------------
+           SDS results format
+------------------------------------------------
+Before you go further you may want to know the format in which we save and process results.
+Because we work with close to 2000 region candidates, saving them as full image-sized masks
+uses up a lot of space and requires a lot of memory to process. Instead, we save these region
+ candidates using a superpixel representation: we save a superpixel map, containing the superpixel id 
+for each pixel in the image, and we represent each region as a binary vector indicating which
+superpixels are present in the region. To allow this superpixel representation to be accessible to
+Caffe, we 
+o save the superpixel map as a text file, the first two numbers in which represent the size of the
+ image and the rest of the file contains the superpixel ids of the pixels in scanline order.
+o stack the representation of each region as a matrix (each column representing a region) and save it as a png image.
+
+read_sprep can read this representation into matlab.
+
+After the regions have been scored and non-max suppressed, we store the chosen regions as a cell array, one cell
+per category. Each cell is itself a cell array, with as many cells as there are images, and each cell containing
+ the region id of the chosen regions. The scores are stored in a separate cell array.
+
+After refinement, the refined regions are stored as binary matrices in mat files, one for each image. The refined
+regions for different categories are stored in different directories
+
+
+
+
+--------------------------------------------------------
+         Evaluating on detection and segmentation
+--------------------------------------------------------
+o Detection
+  To evaluate on detection, after computing scores on all regions, use misc/box_nms.m to non-max suppress the boxes
+  using box overlap. misc/write_test_boxes will write the boxes out to a file that you can submit to PASCAL.
+
+o Semantic segmentation
+  To evaluate on semantic segmentation, compute scores on all regions, do misc/region_nms.m to non-max suppress boxes,
+  and use misc/get_top_regions.m to get the top regions per category. For our experiments, we picked the top 5K regions for seg val
+  and seg test. Then call paste_segments:
+  [local_ids, labels, scores2] = paste_segments(topchosen, scores, region_meta_info, 2, 10, -1);
+  topchosen is the first output of get_top_regions.m. These parameters above were tuned on seg val 2011.
+  This function will pick out the segments to paste. To do the actual pasting, use create_pasted_segmentations (if you don't want any
+  refinement) or create_pasted_segmentations_refined (if you want refinement). Refinement is a bit slower but works ~1 point better.
 
 
 -------------------------------------------------

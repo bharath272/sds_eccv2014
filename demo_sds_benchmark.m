@@ -18,6 +18,7 @@ chosen=tmp.topchosen;
 chosenscores=tmp.topscores;
 
 
-output=run_benchmark(imnames, chosen{15}, chosenscores{15}, sptextdir, regspimgdir, sbddir, 15);
+output=run_benchmark(imnames, chosen, chosenscores, sptextdir, regspimgdir, sbddir, 15);
 pause;
-output=run_benchmark(imnames, chosen{15}, chosenscores{15}, sptextdir, regspimgdir, sbddir, 15, refinedoutdir);
+output=run_benchmark(imnames, chosen, chosenscores, sptextdir, regspimgdir, sbddir, 15, refinedoutdir);
+
