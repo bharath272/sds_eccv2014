@@ -43,7 +43,7 @@ Download the precomputed results from this ftp link:
 and untar it. You can visualize the precomputed results using the function `visualize_precomputed_results.m`, 
 to which you provide the directory containing the precomputed results, the directory containing PASCAL images, 
 and the category number (1-20) you want to visualize.
-Note that you **do not** need to install any of the external dependencies above if you want to simply visualize
+Note that you **do not** need to install Caffe or any of the external dependencies above if you want to simply visualize
 or use precomputed results.
 
 ###Testing Pre-trained models
