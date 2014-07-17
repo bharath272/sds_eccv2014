@@ -292,7 +292,7 @@ d=size(X,1);
 X(d/2+1:end,:)=0;
 
 fprintf('calling liblinear with:%s\n',opts);
-llm = liblinear_train(y, double(X), opts, 'col');
+llm = liblinear_train(y, sparse(double(X)), opts, 'col');
 model.w = single(llm.w(1:end-1)');
 model.b = single(llm.w(end)*bias_mult);
 

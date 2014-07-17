@@ -289,7 +289,7 @@ opts = sprintf('-w1 %.10f -c %.10f -s 3 -B %.10f', ...
 X=cat(2, cache.X_pos', cache.X_neg');
 y=[ones(size(cache.X_pos,1),1); zeros(size(cache.X_neg,1),1)];
 fprintf('calling liblinear with:%s\n',opts);
-llm = liblinear_train(y, double(X), opts, 'col');
+llm = liblinear_train(y, sparse(double(X)), opts, 'col');
 model.w = single(llm.w(1:end-1)');
 model.b = single(llm.w(end)*bias_mult);
 

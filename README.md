@@ -1,3 +1,10 @@
+##Simultaneous Detection and Segmentation
+
+This is code for the ECCV Paper:
+[Simultaneous Detection and Segmentation](http://www.cs.berkeley.edu/~bharath2/pubs/pdfs/BharathECCV2014.pdf) 
+Bharath Hariharan, Pablo Arbelaez, Ross Girshick, Jitendra Malik
+To appear in ECCV, 2014.
+
 
 ###Installation
 
@@ -42,8 +49,8 @@ Download the pretrained models from this ftp link:
 `ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_pretrained_models.tar.gz`
 and untar them in the main SDS directory. 
 
-After that, you can run the pretrained models on any set of images using the function 
-`imagelist_to_sds.m`. To see how to call that function, start with `demo_sds.m`
+`demo_sds.m` is a simple demo that uses the precomputed models to show the outputs we get on a single image. This function is a wrapper around the main
+function, which is called `imagelist_to_sds.m`.
 
 ###Benchmarking and evaluation
 
@@ -56,9 +63,27 @@ and after refinement, and reports an AP<sup>r</sup> of **59.9** in the first cas
 The main function for running the benchmark is `evaluation/run_benchmark.m`. `demo_sds_benchmark` should point 
 you to how to run the benchmark.
 
-###SDS results format
-Before you go further you may want to know the format in which we save and process results.
+###Evaluating on detection and segmentation
 
+* **Detection:**
+  Look at `imagelist_to_det.m` to see how to produce a bounding box detection output. 
+  In summary, after computing scores on all regions, we use `misc/box_nms.m` to non-max suppress the boxes
+  using box overlap. `misc/write_test_boxes` then writes the boxes out to a file that you can submit to PASCAL.
+
+* **Semantic segmentation:**
+  Look at `imagelist_to_seg.m` to see how we produce a semantic segmentation output.
+  In summary, after we compute scores on all regions, we do `misc/region_nms.m` to non-max suppress boxes,
+  and use `misc/get_top_regions.m` to get the top regions per category. For our experiments, we picked the top 5K regions for seg val
+  and seg test. Then we call `paste_segments`:
+  `[local_ids, labels, scores2] = paste_segments(topchosen, scores, region_meta_info, 2, 10, -1);`
+  `topchosen` is the first output of `get_top_regions.m`. These parameters above were tuned on seg val 2011.
+  This function will pick out the segments to paste. To do the actual pasting, use `create_pasted_segmentations` (if you don't want any
+  refinement) or `create_pasted_segmentations_refined` (if you want refinement). Refinement is a bit slower but works ~1 point better.
+
+
+
+###SDS results format
+If you want to do more with our results, you may want to understand how we represent our results.
 * **Representing region candidates:**
  Because we work with close to 2000 region candidates, saving them as full image-sized masks
  uses up a lot of space and requires a lot of memory to process. Instead, we save these region
@@ -82,22 +107,6 @@ Before you go further you may want to know the format in which we save and proce
  regions for different categories are stored in different directories
 
 
-
-
-###Evaluating on detection and segmentation
-
-* **Detection:**
-  To evaluate on detection, after computing scores on all regions, use `misc/box_nms.m` to non-max suppress the boxes
-  using box overlap. `misc/write_test_boxes` will write the boxes out to a file that you can submit to PASCAL.
-
-* **Semantic segmentation:**
-  To evaluate on semantic segmentation, compute scores on all regions, do `misc/region_nms.m` to non-max suppress boxes,
-  and use `misc/get_top_regions.m` to get the top regions per category. For our experiments, we picked the top 5K regions for seg val
-  and seg test. Then call `paste_segments`:
-  `[local_ids, labels, scores2] = paste_segments(topchosen, scores, region_meta_info, 2, 10, -1);`
-  `topchosen` is the first output of `get_top_regions.m`. These parameters above were tuned on seg val 2011.
-  This function will pick out the segments to paste. To do the actual pasting, use `create_pasted_segmentations` (if you don't want any
-  refinement) or `create_pasted_segmentations_refined` (if you want refinement). Refinement is a bit slower but works ~1 point better.
 
 
 ###Retraining region classifiers

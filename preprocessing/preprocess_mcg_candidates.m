@@ -25,10 +25,10 @@ for i=1:numel(imnames)
     %compress to remove irrelevant sps
     [sp, reg2sp]=compressSp2reg(sp, reg2sp);
 
+    if(~exist(fullfile(ovoutdir, [imnames{i} '.mat']), 'file'))
     %compute overlaps between everything
     ov=double(reg2sp')*double(reg2sp);
     ov=ov>0;
-    if(~exist(fullfile(ovoutdir, [imnames{i} '.mat']), 'file'))
     save(fullfile(ovoutdir, [imnames{i} '.mat']), 'ov');
     end
     %load gt
@@ -47,13 +47,13 @@ for i=1:numel(imnames)
     region_meta_info.overlaps{i}=overlap;
     region_meta_info.box_overlaps{i}=box_overlap;
     region_meta_info.gt{i}=[categories(:)' zeros(1,size(reg2sp,2))];
-
+    
     %add ground truth to reg2sp
     gt_sp=double(inst+1);
     gt_reg2sp=[zeros(1,numel(categories)); eye(numel(categories))];
     gt_reg2sp=logical(gt_reg2sp);
     [sp, reg2sp]=intersect_partitions(gt_sp, sp, gt_reg2sp, reg2sp);
-
+    region_meta_info.boxes{i}=get_region_boxes(sp, reg2sp);
     %write sprep
     
     textfile=fullfile(sptextdir, [imnames{i} '.txt']);
