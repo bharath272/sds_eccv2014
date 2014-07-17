@@ -1,11 +1,9 @@
 ##Simultaneous Detection and Segmentation
 
 This is code for the ECCV Paper:
-[Simultaneous Detection and Segmentation](http://www.cs.berkeley.edu/~bharath2/pubs/pdfs/BharathECCV2014.pdf) 
-
-Bharath Hariharan, Pablo Arbelaez, Ross Girshick, Jitendra Malik
-
-To appear in ECCV, 2014.
+[Simultaneous Detection and Segmentation](http://www.cs.berkeley.edu/~bharath2/pubs/pdfs/BharathECCV2014.pdf)  
+Bharath Hariharan, Pablo Arbelaez, Ross Girshick, Jitendra Malik  
+To appear in ECCV, 2014.  
 
 
 ###Installation
