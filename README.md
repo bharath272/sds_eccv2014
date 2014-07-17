@@ -22,7 +22,10 @@ To appear in ECCV, 2014.
   directory.
 
 * **Starting MATLAB:**
-  Start MATLAB from the main SDS directory. A few possible issues related to Caffe:
+  Start MATLAB and call `startup_sds` from the main SDS directory. This will compile all
+  mexes in MCG and liblinear, and add all paths.
+
+  A few possible issues related to Caffe:
   + You may need to add the path to CUDA libraries (usually in /usr/local/cuda/lib64)
     to `LD_LIBRARY_PATH` before starting MATLAB.
   + When running the code, if you get an error saying:
@@ -30,8 +33,6 @@ To appear in ECCV, 2014.
     try adding `/usr/lib/x86_64-linux-gnu/libfreetype.so.6`(or the equivalent library that
     your system may have) to the `LD_PRELOAD` environment variable before starting MATLAB. 
  
-  Starting MATLAB from the main SDS directory will call the `startup.m` script that will compile all
-  mexes in MCG and liblinear, and add all the paths.
 
 
 
@@ -42,6 +43,8 @@ Download the precomputed results from this ftp link:
 and untar it. You can visualize the precomputed results using the function `visualize_precomputed_results.m`, 
 to which you provide the directory containing the precomputed results, the directory containing PASCAL images, 
 and the category number (1-20) you want to visualize.
+Note that you **do not** need to install any of the external dependencies above if you want to simply visualize
+or use precomputed results.
 
 ###Testing Pre-trained models
 
