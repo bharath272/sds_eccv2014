@@ -13,7 +13,7 @@ To appear in ECCV, 2014.
   The code comes bundled with a version of caffe that we have modified slightly for SDS. (These
   modifications might be merged into the public caffe version sometime in the future). To install
   caffe, follow the instructions on the [caffe webpage](caffe.berkeleyvision.org). (You'll have to
-  install some pre-requisites).
+  install some pre-requisites). After installing all prerequisites, cd into `extern/caffe` and do `make caffe`.  
   After you have made caffe, you will also need to do `make matcaffe`.
 
 * **Downloading other external dependencies (MCG and liblinear):**
@@ -40,9 +40,11 @@ To appear in ECCV, 2014.
 To get started you can look at precomputed results.
 Download the precomputed results from this ftp link:
 `ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_precomputed_results.tar.gz`
-and untar it. You can visualize the precomputed results using the function `visualize_precomputed_results.m`, 
-to which you provide the directory containing the precomputed results, the directory containing PASCAL images, 
-and the category number (1-20) you want to visualize.
+and untar it. The precomputed results contain results on VOC2012 val images (SDS, detection and segmentation). 
+You can visualize the precomputed results using the function `visualize_precomputed_results.m`:
+`visualize_precomputed_results('/path/to/precomputed/results', '/path/to/VOC2012/VOCdevkit/VOC2012/JPEGImages', categ_id)`; 
+Here `categ_id` is the number of the category, for examle 15 for person.
+
 Note that you **do not** need to install Caffe or any of the external dependencies above if you want to simply visualize
 or use precomputed results.
 
@@ -52,14 +54,18 @@ Download the pretrained models from this ftp link:
 `ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_pretrained_models.tar.gz`
 and untar them in the main SDS directory. 
 
-`demo_sds.m` is a simple demo that uses the precomputed models to show the outputs we get on a single image. This function is a wrapper around the main
-function, which is called `imagelist_to_sds.m`.
+`demo_sds.m` is a simple demo that uses the precomputed models to show the outputs we get on a single image. It takes no arguments.
+It runs the trained models on an example image and displays the detections for the person category.
+This function is a wrapper around the main function, which is called `imagelist_to_sds.m`.
 
 ###Benchmarking and evaluation
 
-You can also run the benchmark demo, `demo_sds_benchmark`, which tests our pipeline on a small set of
-100 images and then evaluates for the person category. It does the evaluation for both before refinement
-and after refinement, and reports an AP<sup>r</sup> of **59.9** in the first case and **66.8** in the second case. 
+You can also run the benchmark demo, `demo_sds_benchmark`, which tests our pipeline on a small 100 image subset of
+VOC2012 val and then evaluates for the person category. You can call it as follows:  
+`demo_sds_benchmark('/path/to/VOC2012/VOCdevkit/VOC2012/JPEGImages/', '/path/to/cachedir', '/path/to/SBD');`  
+Here the cachedir is a directory where intermediate results will be stored. The function also requires the SBD
+(Semantic Boundaries Dataset), which you can get [here](http://www.cs.berkeley.edu/~bharath2/codes/SBD/download.html).
+The function does the evaluation for both before refinement and after refinement, and reports an AP<sup>r</sup> of **59.9** in the first case and **66.8** in the second case. 
 
 
 
