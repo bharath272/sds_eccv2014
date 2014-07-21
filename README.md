@@ -42,8 +42,8 @@ Download the precomputed results from this ftp link:
 `ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_precomputed_results.tar.gz`
 and untar it. The precomputed results contain results on VOC2012 val images (SDS, detection and segmentation). 
 You can visualize the precomputed results using the function `visualize_precomputed_results.m`:
-`visualize_precomputed_results('/path/to/precomputed/results', '/path/to/VOC2012/VOCdevkit/VOC2012/JPEGImages', categ_id)`; 
-Here `categ_id` is the number of the category, for examle 15 for person.
+`visualize_precomputed_results('/path/to/precomputed/results', '/path/to/VOC2012/VOCdevkit/VOC2012/JPEGImages', categ_id)`;   
+Here `categ_id` is the number of the category, for example 15 for person.
 
 Note that you **do not** need to install Caffe or any of the external dependencies above if you want to simply visualize
 or use precomputed results.
