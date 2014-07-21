@@ -101,7 +101,8 @@ If you want to do more with our results, you may want to understand how we repre
  superpixels are present in the region. To allow this superpixel representation to be accessible to
  Caffe, we 
  + save the superpixel map as a text file, the first two numbers in which represent the size of the
- image and the rest of the file contains the superpixel ids of the pixels in scanline order.
+ image and the rest of the file contains the superpixel ids of the pixels in MATLAB's column-major order
+ (i.e, we first store the superpixel ids of the first column, then the second column and so on).
  + stack the representation of each region as a matrix (each column representing a region) and save it as a png image.
 
  `read_sprep` can read this representation into matlab.
