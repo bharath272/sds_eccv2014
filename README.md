@@ -154,8 +154,8 @@ The solver prototxt specifies the path to the train and val prototxts. It also s
  `extern/caffe/examples/imagenet/get_caffe_reference_imagenet_model.sh`
  
 * **Finetuning:**
- cd into caffe and use the following command to train the network (replace `caffe_reference_imagenet_model` by the appropriate initialization):
- `GLOG_logtostderr=1 ./build/tools/finetune_net.bin ../prototxts/pascal_finetune_solver.prototxt ./examples/imagenet/caffe_reference_imagenet_model 2>&1 | tee logdir/log.txt`
+ cd into caffe and use the following command to train the network (replace `caffe_reference_imagenet_model` by the appropriate initialization):  
+ `GLOG_logtostderr=1 ./build/tools/finetune_net.bin ../prototxts/pascal_finetune_solver.prototxt ./examples/imagenet/caffe_reference_imagenet_model 2>&1 | tee logdir/log.txt`  
  Finally, extracting features requires a network with the two-pathway architecture. If you trained the box and region pathway separately, you can stitch them together
  using `feature_extractor/combine_box_region_nets.m`
 
