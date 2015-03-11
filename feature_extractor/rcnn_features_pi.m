@@ -24,7 +24,7 @@ fprintf('Computing features');
 tic;
 for j = 1:length(batches)
    fprintf('.');
-  B=[ batches(j),masked_batches(j)];
+  B=[ batches(j); masked_batches(j)];  % B=[ batches(j),masked_batches(j)];
   % forward propagate batch of region images 
   f = caffe('forward', B);
   f = f{1};
