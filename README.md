@@ -1,4 +1,4 @@
-##Simultaneous Detection and Segmentation
+## Simultaneous Detection and Segmentation
 
 This is code for the ECCV Paper:  
 [Simultaneous Detection and Segmentation](http://www.cs.berkeley.edu/~bharath2/pubs/pdfs/BharathECCV2014.pdf)  
@@ -6,7 +6,7 @@ Bharath Hariharan, Pablo Arbelaez, Ross Girshick, Jitendra Malik
 To appear in ECCV, 2014.  
 
 
-###Installation
+### Installation
 
 
 * **Installing caffe:**
@@ -36,7 +36,7 @@ To appear in ECCV, 2014.
 
 
 
-###Using Pre-computed results
+### Using Pre-computed results
 To get started you can look at precomputed results.
 Download the precomputed results from this ftp link:
 `ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_precomputed_results.tar.gz`
@@ -48,7 +48,7 @@ Here `categ_id` is the number of the category, for example 15 for person.
 Note that you **do not** need to install Caffe or any of the external dependencies above if you want to simply visualize
 or use precomputed results.
 
-###Testing Pre-trained models
+### Testing Pre-trained models
 
 Download the pretrained models from this ftp link:
 `ftp://ftp.cs.berkeley.edu/pub/projects/vision/sds_pretrained_models.tar.gz`
@@ -58,7 +58,7 @@ and untar them in the main SDS directory.
 It runs the trained models on an example image and displays the detections for the person category.
 This function is a wrapper around the main function, which is called `imagelist_to_sds.m`.
 
-###Benchmarking and evaluation
+### Benchmarking and evaluation
 
 You can also run the benchmark demo, `demo_sds_benchmark`, which tests our pipeline on a small 100 image subset of
 VOC2012 val and then evaluates for the person category. You can call it as follows:  
@@ -72,7 +72,7 @@ The function does the evaluation for both before refinement and after refinement
 The main function for running the benchmark is `evaluation/run_benchmark.m`. `demo_sds_benchmark` should point 
 you to how to run the benchmark.
 
-###Evaluating on detection and segmentation
+### Evaluating on detection and segmentation
 
 * **Detection:**
   Look at `imagelist_to_det.m` to see how to produce a bounding box detection output. 
@@ -91,7 +91,7 @@ you to how to run the benchmark.
 
 
 
-###SDS results format
+### SDS results format
 If you want to do more with our results, you may want to understand how we represent our results.
 * **Representing region candidates:**
  Because we work with close to 2000 region candidates, saving them as full image-sized masks
@@ -119,7 +119,7 @@ If you want to do more with our results, you may want to understand how we repre
 
 
 
-###Retraining region classifiers
+### Retraining region classifiers
 
 To retrain region classifiers, you first need to save features for all regions including ground truth. You can look at the function
 `setup_svm_training.m`. This function will save features and return a `region_meta_info` struct, which has in it the overlaps of all the
@@ -129,7 +129,7 @@ ground truth (SBD).
 Once the features are saved you can use the `region_classification/train_svms.m` function to train the detectors.
 You can also train refinement models for each category using `refinement/train_refiner.m` 
 
-###Retraining the network
+### Retraining the network
 To retrain the network you will have to use caffe. You need two things: a prototxt specifying the architecture, and a window file specifying
 the data.
 
